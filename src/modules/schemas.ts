@@ -1,0 +1,12 @@
+import { z } from 'zod';
+export const id = z.uuid();
+export const productInput = z.object({ sku: z.string().trim().min(1).max(100), name: z.string().trim().min(1).max(200), priceCents: z.number().int().min(0).max(100000000) }).strict();
+export const receiptInput = z.object({ quantity: z.number().int().positive().max(1000000) }).strict();
+export const adjustmentInput = z.object({ quantity: z.number().int().min(-1000000).max(1000000).refine(q => q !== 0), reason: z.string().trim().min(1).max(500) }).strict();
+export const orderInput = z.object({ customerId: z.string().trim().min(1).max(200), items: z.array(z.object({ productId: id, quantity: z.number().int().min(1).max(1000000) }).strict()).min(1).max(100) }).strict();
+export const keyHeaders = z.object({ 'idempotency-key': z.string().trim().min(1).max(200) });
+export const orderParams = z.object({ id });
+export const inventoryParams = z.object({ productId: id });
+export const productResponse = z.object({ id, sku: z.string(), name: z.string(), price_cents: z.number().int(), created_at: z.string(), on_hand: z.number().int(), reserved: z.number().int(), available: z.number().int() });
+export const orderResponse = z.object({ id, customer_id: z.string(), status: z.enum(['PENDING','CONFIRMED','CANCELLED','EXPIRED']), total_cents: z.number().int(), expires_at: z.string(), created_at: z.string(), updated_at: z.string(), items: z.array(z.object({ product_id: id, quantity: z.number().int(), unit_price_cents: z.number().int() })) });
+export const errorResponse = z.object({ error: z.object({ code: z.string(), message: z.string(), details: z.record(z.string(), z.unknown()) }) });

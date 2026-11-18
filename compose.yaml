@@ -1,0 +1,52 @@
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: inventory
+      POSTGRES_PASSWORD: inventory
+      POSTGRES_DB: inventory
+    ports: ["127.0.0.1:5432:5432"]
+    volumes: ["inventory-data:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U inventory"]
+      interval: 2s
+      timeout: 3s
+      retries: 20
+  api:
+    build:
+      context: .
+      target: runtime
+    environment:
+      DATABASE_URL: postgres://inventory:inventory@db:5432/inventory
+      ORDER_TTL_SECONDS: ${ORDER_TTL_SECONDS:-900}
+      WORKER_INTERVAL_MS: ${WORKER_INTERVAL_MS:-5000}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+    ports: ["127.0.0.1:3000:3000"]
+    depends_on:
+      db:
+        condition: service_healthy
+  test-db:
+    image: postgres:17-alpine
+    profiles: ["test"]
+    environment:
+      POSTGRES_USER: inventory
+      POSTGRES_PASSWORD: inventory
+      POSTGRES_DB: inventory_test
+    tmpfs: ["/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U inventory -d inventory_test"]
+      interval: 2s
+      timeout: 3s
+      retries: 20
+  test:
+    build:
+      context: .
+      target: test
+    profiles: ["test"]
+    environment:
+      TEST_DATABASE_URL: postgres://inventory:inventory@test-db:5432/inventory_test
+    depends_on:
+      test-db:
+        condition: service_healthy
+volumes:
+  inventory-data:

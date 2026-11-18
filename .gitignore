@@ -1,0 +1,26 @@
+# Dependencies and build output
+node_modules/
+dist/
+*.tsbuildinfo
+
+# Local environment files (keep the configuration template)
+.env
+.env.*
+!.env.example
+
+# Logs and test output
+*.log
+coverage/
+.nyc_output/
+
+# Local database files
+.pg-test/
+
+# Editor and operating system files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Personal study notes
+STUDY_GUIDE.md

@@ -1,0 +1,47 @@
+{
+  "name": "transaction-safe-order-inventory-api",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "migrate": "node --import tsx src/migrate.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "test:unit": "vitest run test/unit",
+    "test:integration": "vitest run test/integration",
+    "lint": "eslint src test scripts vitest.config.ts",
+    "seed": "node --import tsx src/seed.ts",
+    "openapi": "node --import tsx scripts/openapi.ts",
+    "load": "node --import tsx scripts/load.ts"
+  },
+  "dependencies": {
+    "@fastify/swagger": "^9.9.5",
+    "@fastify/swagger-ui": "^6.1.4",
+    "fastify": "^5.12.8",
+    "fastify-type-provider-zod": "^7.0.0",
+    "node-pg-migrate": "^9.0.0",
+    "pg": "^8.16.0",
+    "pino": "^10.4.0",
+    "zod": "^4.0.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^24.0.0",
+    "@types/pg": "^8.15.0",
+    "eslint": "^10.15.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.0",
+    "typescript-eslint": "^8.72.2",
+    "vitest": "^5.1.0"
+  },
+  "overrides": {
+    "glob": "^14.0.6",
+    "minimatch": "^11.0.8"
+  }
+}
